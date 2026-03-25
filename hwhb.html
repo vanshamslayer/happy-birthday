@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-light: #ffd1ff;
+            --primary: #ff9a9e;
+            --secondary: #fecfef;
+            --text-dark: #4a4a4a;
+            --text-light: #ffffff;
+            --box-main: #ff4081;
+            --box-dark: #c2185b;
+            --ribbon: #ffea00;
+            --ribbon-dark: #ffb300;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        #floating-elements {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+
+        .flower {
+            position: absolute;
+            width: 30px; height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="white" d="M256 0c-17.7 0-32 14.3-32 32V66c-38.3 12-70.8 38.3-88.8 74.3L111 126c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l24.3 24.3C76.3 221.2 50 253.7 38 292H4c-17.7 0-32 14.3-32 32s14.3 32 32 32h34c12 38.3 38.3 70.8 74.3 88.8l-24.3 24.3c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l24.3-24.3c27.6 15.6 59.4 24.6 92.4 24.6s64.8-9 92.4-24.6l24.3 24.3c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-24.3-24.3c36-18 62.3-50.5 74.3-88.8h34c17.7 0 32-14.3 32-32s-14.3-32-32-32h-34c-12-38.3-38.3-70.8-74.3-88.8l24.3-24.3c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L401 140.3c-18-36-50.5-62.3-88.8-74.3V32c0-17.7-14.3-32-32-32zM256 352a96 96 0 1 1 0-192 96 96 0 1 1 0 192z"/></svg>');
+            background-size: cover;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
+            opacity: 0.7;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); }
+        }
+
+        .stage {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            z-index: 10;
+        }
+
+        .stage.hidden { opacity: 0; pointer-events: none; transform: scale(0.8); z-index: -1; }
+
+        .title-msg {
+            position: absolute; top: 15%; width: 100%; text-align: center;
+            font-family: 'Dancing Script', cursive; font-size: 3rem;
+            color: white; text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            animation: pulse-op 2s infinite alternate;
+        }
+
+        @keyframes pulse-op {
+            from { opacity: 0.8; transform: translateY(0); }
+            to { opacity: 1; transform: translateY(-5px); }
+        }
+
+        /* --- GIFT BOX --- */
+        .scene { width: 200px; height: 200px; perspective: 800px; cursor: pointer; z-index: 20; }
+        .cube {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d;
+            transform: translateZ(-100px) rotateX(-20deg) rotateY(45deg);
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: hover-cube 4s infinite ease-in-out alternate;
+        }
+
+        @keyframes hover-cube {
+            0% { transform: translateZ(-100px) rotateX(-20deg) rotateY(45deg) translateY(0); }
+            100% { transform: translateZ(-100px) rotateX(-20deg) rotateY(45deg) translateY(-20px); }
+        }
+
+        .scene.open .cube { transform: translateZ(50px) rotateX(10deg) rotateY(180deg); animation: none; }
+
+        .cube__face {
+            position: absolute; width: 200px; height: 200px;
+            border: 2px solid rgba(0,0,0,0.1); background: var(--box-main);
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.2);
+        }
+        
+        .cube__face::before, .cube__face::after { content: ''; position: absolute; background: var(--ribbon); }
+        .cube__face:not(.cube__face--top):not(.cube__face--bottom)::before { width: 30px; height: 100%; left: 85px; top: 0; }
+        .cube__face:not(.cube__face--top):not(.cube__face--bottom)::after { width: 100%; height: 30px; left: 0; top: 85px; }
+
+        .cube__face--front  { transform: rotateY(0deg) translateZ(100px); }
+        .cube__face--right  { transform: rotateY(90deg) translateZ(100px); background: var(--box-dark); }
+        .cube__face--back   { transform: rotateY(180deg) translateZ(100px); }
+        .cube__face--left   { transform: rotateY(-90deg) translateZ(100px); background: var(--box-dark); }
+        .cube__face--top    { transform: rotateX(90deg) translateZ(100px); background: var(--box-main); transform-origin: top; transition: transform 1s; }
+        .cube__face--bottom { transform: rotateX(-90deg) translateZ(100px); background: #880e4f; }
+
+        .scene.open .cube__face--top { transform: rotateX(90deg) translateZ(100px) rotateX(-110deg); }
+        
+        .bow { position: absolute; width: 100%; height: 100%; z-index: 2; }
+        .bow::before, .bow::after {
+            content:''; position: absolute; width: 60px; height: 40px;
+            border: 8px solid var(--ribbon); border-radius: 50% 50% 0 50%;
+            top: 50px; left: 50px; transform: rotate(-45deg);
+        }
+        .bow::after { border-radius: 50% 50% 50% 0; left: 90px; transform: rotate(45deg); }
+
+        .puppet {
+            position: absolute; width: 100px; height: 120px; bottom: 0; left: 50px;
+            transform: translateZ(20px) scaleY(0); transform-origin: bottom;
+            transition: transform 0.6s; opacity: 0; display: flex; flex-direction: column; align-items: center;
+        }
+
+        .scene.open .puppet { transform: translateZ(20px) scaleY(1) translateY(-60px); opacity: 1; }
+        .puppet svg { animation: float-puppet 2s infinite alternate ease-in-out; }
+
+        @keyframes float-puppet { 0% { transform: rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
+
+        /* --- POLAROIDS & CARD --- */
+        .gallery-container { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+
+        .polaroid {
+            width: 200px; background: white; padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 2px;
+            pointer-events: auto; cursor: pointer; transition: transform 0.4s ease;
+            position: absolute;
+        }
+
+        .polaroid:hover { transform: scale(1.15) rotate(0deg) !important; z-index: 100 !important; }
+
+        .photo-space {
+            width: 100%; height: 170px; background: #eee;
+            position: relative; overflow: hidden; border: 1px solid #ddd;
+        }
+        
+        /* IMAGE STYLING */
+        .photo-space img {
+            width: 100%; height: 100%; object-fit: cover;
+            display: block; position: absolute; top: 0; left: 0;
+        }
+
+        .caption { text-align: center; font-family: 'Dancing Script', cursive; font-size: 1.5rem; margin-top: 10px; color: #333; }
+        
+        .p1 { top: 10%; left: 5%; transform: rotate(-15deg); }
+        .p2 { top: 15%; right: 5%; transform: rotate(10deg); }
+        .p3 { bottom: 10%; left: 8%; transform: rotate(8deg); }
+        .p4 { bottom: 12%; right: 8%; transform: rotate(-12deg); }
+
+        .card-container {
+            width: 350px; height: 500px; position: relative; z-index: 50;
+            cursor: pointer; transition: transform 0.6s; transform-style: preserve-3d;
+        }
+
+        .card-container.is-flipped { transform: rotateY(180deg) scale(1.1); }
+
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 30px; text-align: center; background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .card-back { transform: rotateY(180deg); background: white; }
+
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: #ff4081; }
+        .heart { color: #ff4081; animation: beat 1s infinite alternate; font-size: 2rem; }
+        @keyframes beat { to { transform: scale(1.2); } }
+
+        #confetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+    </style>
+</head>
+<body>
+
+    <div id="floating-elements"></div>
+    <canvas id="confetti"></canvas>
+
+    <div id="stage-1" class="stage active">
+        <h2 class="title-msg">I have a surprise for you...</h2>
+        <div class="scene" id="giftScene">
+            <div class="cube" id="giftBox">
+                <div class="cube__face cube__face--front"></div>
+                <div class="cube__face cube__face--back"></div>
+                <div class="cube__face cube__face--right"></div>
+                <div class="cube__face cube__face--left"></div>
+                <div class="cube__face cube__face--top"><div class="bow"></div></div>
+                <div class="cube__face cube__face--bottom"></div>
+                <div class="puppet">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80">
+                        <circle cx="50" cy="50" r="40" fill="#fbc02d" />
+                        <circle cx="35" cy="40" r="5" fill="#3e2723" />
+                        <circle cx="65" cy="40" r="5" fill="#3e2723" />
+                        <path d="M 40 60 Q 50 75 60 60" stroke="#3e2723" stroke-width="4" fill="none" />
+                        <polygon points="20,30 50,-10 80,30" fill="#e91e63" />
+                    </svg>
+                </div>
+            </div>
+            <div class="title-msg" style="top: 110%; font-size: 1.5rem;">Tap the Box!</div>
+        </div>
+    </div>
+
+    <div id="stage-2" class="stage hidden">
+        <div class="gallery-container">
+            <div class="polaroid p1">
+                <div class="photo-space"><img src="blur.jpeg" alt="Memory 1"></div>
+                <div class="caption">Special Day</div>
+            </div>
+            <div class="polaroid p2">
+                <div class="photo-space"><img src="birth.jpeg" alt="Memory 2"></div>
+                <div class="caption">Smiles</div>
+            </div>
+            <div class="polaroid p3">
+                <div class="photo-space"><img src="akal.jpeg" alt="Memory 3"></div>
+                <div class="caption">Beautiful</div>
+            </div>
+            <div class="polaroid p4">
+                <div class="photo-space"><img src="pagal.jpeg" alt="Memory 4"></div>
+                <div class="caption">Together</div>
+            </div>
+        </div>
+
+        <div class="card-container" id="birthdayCard">
+            <div class="card-face card-front">
+                <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem; color: #ff4081;">For You...</h2>
+                <p style="margin-top: 20px;">Tap to open</p>
+                <div class="heart">♥</div>
+            </div>
+            <div class="card-face card-back">
+                <h1>Happy Birthday!</h1>
+                <p style="margin: 15px 0;">Dear mam, i hope this birthday shall bring joy in your life and ability to resolve your problems bring smile to your face everytime and also thank you for being in my life thank you for being my most trusted most sensible most supercalifragilistic friend thank youuuuu for everything. </p>
+                <div class="heart" style="font-size: 3rem;">♥</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Flowers ---
+        const container = document.getElementById('floating-elements');
+        for (let i = 0; i < 20; i++) {
+            const f = document.createElement('div');
+            f.className = 'flower';
+            f.style.left = Math.random() * 100 + 'vw';
+            f.style.animationDelay = -Math.random() * 10 + 's';
+            container.appendChild(f);
+        }
+
+        // --- Gift Logic ---
+        const gift = document.getElementById('giftScene');
+        gift.onclick = () => {
+            gift.classList.add('open');
+            setTimeout(() => {
+                document.getElementById('stage-1').classList.add('hidden');
+                setTimeout(() => {
+                    document.getElementById('stage-1').style.display = 'none';
+                    document.getElementById('stage-2').classList.remove('hidden');
+                    popConfetti();
+                }, 1000);
+            }, 2500);
+        };
+
+        // --- Card Logic ---
+        document.getElementById('birthdayCard').onclick = function() {
+            this.classList.toggle('is-flipped');
+            popConfetti();
+        };
+
+        // --- Confetti ---
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        window.onresize();
+
+        function popConfetti() {
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: window.innerWidth / 2, y: window.innerHeight / 2,
+                    v: { x: (Math.random() - 0.5) * 10, y: (Math.random() - 0.5) * 20 },
+                    r: Math.random() * 5 + 2, color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                });
+            }
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.x += p.v.x; p.y += p.v.y; p.v.y += 0.2;
+                ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+                if (p.y > canvas.height) particles.splice(i, 1);
+            });
+            requestAnimationFrame(update);
+        }
+        update();
+    </script>
+</body>
+</html>
